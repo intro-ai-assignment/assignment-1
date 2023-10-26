@@ -1,5 +1,6 @@
 import random
 import math
+import time
 
 def generate_state(N):
     return [random.randint(0, N - 1) for value in range(N)]
@@ -15,7 +16,7 @@ def calc_h_value(state):
 
 #Steepest-Ascent Hill Climbing (Gradient Search)
 
-def move_steepest_hill(state):
+def move_steepest(state):
     moves = {}
     N = len(state)
     for row in range(N):
@@ -53,7 +54,7 @@ def steepest_ascent(N):
             print("#Solution found in step {}".format(steps))
             print(f"Solution: {state}")
             return state
-        state = move_steepest_hill(state)
+        state = move_steepest(state)
 
 #Simulated Annealing
 def move_annealing(state, h_to_beat, temp):
@@ -70,7 +71,8 @@ def move_annealing(state, h_to_beat, temp):
             found_move = True
         else:
             delta_e = h_to_beat - h_cost
-            accept_probability = min(1, math.exp(delta_e/temp))
+            pro = math.exp(delta_e/temp)
+            accept_probability = min(1, pro)
             found_move = random.random() <= accept_probability
     return new_state
 

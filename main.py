@@ -55,7 +55,7 @@ if __name__ == "__main__":
             else:
                 result = hill_climbing.annealing(N)
             t2 = time.time()
-            if len(result) > 0:
+            if len(result) > 0 and len(result) < 30:
                 print_chessboard(result)
             print("Time cost:", t2 - t1, "seconds")
             break

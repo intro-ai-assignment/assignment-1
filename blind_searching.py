@@ -1,49 +1,25 @@
 import time
 import random
 
-class State:
-    def __init__(self, N, data = None):
-        self.N = N
-        if data is None:
-            self.data = []
-        else:
-            self.data = data
-
-    def is_the_solution(self):
-        return len(self.data) == self.N
-
-    def __eq__(self, other):
-        return self.N == other.N and self.data == other.data
-
-    def extend(self):
-        if self.is_the_solution():
-            return
-        new_states = []
-        row = len(self.data)
-        for col in range(self.N):
-            if col not in self.data:
-                is_safe = True
-                for i in range(row):
-                    if abs(row - i) == abs(col - self.data[i]):
-                        is_safe = False
-                        break
-                if is_safe:
-                    new_data = list(self.data)
-                    new_data.append(col)
-                    new_state = State(self.N, new_data)
-                    new_states.append(new_state)
-        return new_states
-
-    def __repr__(self):
-        result = [str(value) for value in self.data]
-        result = ", ".join(result)
-        result = "[" + result + "]"
-        return result
+def extend(state):
+    N = len(state)
+    new_states = []
+    row = state.index(-1)
+    for col in range(N):
+        if col not in state:
+            is_safe = True
+            for i in range(row):
+                if abs(row - i) == abs(col - state[i]):
+                    is_safe = False
+                    break
+            if is_safe:
+                new_state = list(state)
+                new_state[row] = col
+                new_states.append(new_state)
+    return new_states
         
-
 def BFS(N):
-    print("\t--- Breath First Search ---")
-    init_state = State(N)
+    init_state = [-1] * N
     frontier = [init_state]
     checked_states = []
     solutions = []
@@ -51,28 +27,26 @@ def BFS(N):
     while True:
         steps += 1
         if len(frontier) == 0:
-            if(len(solutions) == 0):
-                print("No solutions...")
-            else:
-                for index in range(len(solutions)):
-                    print(f"- Solution {index + 1}: {solutions[index]}")
-                print(f"Total solutions: {len(solutions)}")
+            print(f"Search complete after {steps - 1} steps!!!")
+            for solution in solutions:
+                print(solution)
+            print(f"Total {len(solutions)} solutions")
+            print("\t--- Breath First Search ---")
             return
-        else:
-            selected_state = frontier.pop(0)
-            print(f"+ Step {steps}: {selected_state} - {len(selected_state.data)} - {N}")
-            checked_states.append(selected_state)
-            if selected_state.is_the_solution():
-                solutions.append(selected_state)
-            else:
-                new_states = selected_state.extend()
-                for new_state in new_states:
-                    if new_state not in frontier and new_state not in checked_states:
-                        frontier.append(new_state)
+        selected_state = frontier.pop(0)
+        print(f"- Steps {steps}: {selected_state}")
+        checked_states.append(selected_state)
+        #check current state is solution?
+        if selected_state.count(-1) == 0:
+            solutions.append(selected_state)
+            continue
+        new_states = extend(selected_state)
+        for state in new_states:
+            if state not in frontier and state not in checked_states:
+                frontier.append(state)
 
 def DFS(N):
-    print("\t--- Depth First Search ---")
-    init_state = State(N)
+    init_state = [-1] * N
     frontier = [init_state]
     checked_states = []
     solutions = []
@@ -80,21 +54,20 @@ def DFS(N):
     while True:
         steps += 1
         if len(frontier) == 0:
-            if(len(solutions) == 0):
-                print("No solutions...")
-            else:
-                for index in range(len(solutions)):
-                    print(f"- Solution {index + 1}: {solutions[index]}")
-                print(f"Total solutions: {len(solutions)}")
+            print(f"Search complete after {steps - 1} steps!!!")
+            for solution in solutions:
+                print(solution)
+            print(f"Total {len(solutions)} solutions")
+            print("\t--- Depth First Search ---")
             return
-        else:
-            selected_state = frontier.pop()
-            print(f"+ Step {steps}: {selected_state} - {len(selected_state.data)} - {N}")
-            checked_states.append(selected_state)
-            if selected_state.is_the_solution():
-                solutions.append(selected_state)
-            else:
-                new_states = selected_state.extend()
-                for new_state in new_states:
-                    if new_state not in frontier and new_state not in checked_states:
-                        frontier.append(new_state)
+        selected_state = frontier.pop()
+        print(f"- Steps {steps}: {selected_state}")
+        checked_states.append(selected_state)
+        #check current state is solution?
+        if selected_state.count(-1) == 0:
+            solutions.append(selected_state)
+            continue
+        new_states = extend(selected_state)
+        for state in new_states:
+            if state not in frontier and state not in checked_states:
+                frontier.append(state)
