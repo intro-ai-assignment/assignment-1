@@ -53,11 +53,13 @@ if __name__ == "__main__":
             elif select == 3:
                 result = genetic.genetic_alg(N)
             elif select == 4:
-                result = hill_climbing.steepest_ascent(N)
+                hill_climbing.steepest_ascent(N)
             else:
+                # hill_climbing.annealing(N)
                 result = hill_climbing.annealing(N)
             t2 = time.time()
-            if len(result) > 0:
-                print_chessboard(result)
+            # if len(result) > 0:
+            #     print_chessboard(result)
+            print(result)
             print("Time cost:", t2 - t1, "seconds")
             break
