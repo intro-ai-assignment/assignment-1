@@ -40,8 +40,9 @@ if __name__ == "__main__":
         print(" 3. Genetic Algorithm")
         print(" 4. Steepest-Ascent Hill-Climbing")
         print(" 5. Simulated Annealing")
+        print(" 6. Fast Search")
         select = int(input("Enter number: "))
-        if select < 1 or select > 5:
+        if select < 1 or select > 6:
             print("Please enter valid value...")
         else:
             t1 = time.time()
@@ -54,9 +55,10 @@ if __name__ == "__main__":
                 result = genetic.genetic_alg(N)
             elif select == 4:
                 hill_climbing.steepest_ascent(N)
-            else:
-                # hill_climbing.annealing(N)
+            elif select == 5:
                 result = hill_climbing.annealing(N)
+            else:
+                result = hill_climbing.fast_search(N)
             t2 = time.time()
             # if len(result) > 0:
             #     print_chessboard(result)
