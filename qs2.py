@@ -1,6 +1,5 @@
-import random
-import math
 import numpy as np
+import random
 from functools import reduce
 
 
@@ -10,7 +9,6 @@ def generate_permutation(N):
     return initial_state
 
 
-# this modified function is no longer suitable for the implemented hill climbing
 def calc_h_value(state):
     n = len(state)
 
@@ -26,89 +24,6 @@ def calc_h_value(state):
     conflicts += np.sum((secondary_diag_frequency * (secondary_diag_frequency - 1)) / 2)
 
     return int(conflicts)
-
-
-# Steepest-Ascent Hill Climbing (Gradient Search)
-def move_steepest_hill(state, h_to_beat):
-    moves = {}
-    N = len(state)
-    for row in range(N):
-        for col in range(N):
-            if col == state[row]:
-                continue
-            else:
-                new_state = list(state)
-                new_state[row] = col
-                moves[(row, col)] = calc_h_value(new_state)
-    best_moves = []
-    for k, v in moves.items():
-        if v < h_to_beat:
-            h_to_beat = v
-    for k, v in moves.items():
-        if v == h_to_beat:
-            best_moves.append(k)
-    if len(best_moves) > 0:
-        index = random.randint(0, len(best_moves) - 1)
-        element = best_moves[index]
-        state[element[0]] = element[1]
-    return state
-
-
-def steepest_ascent(N):
-    print("\t--- Steepest-Ascent Hill Climbing Algorithm ---")
-    steps = 0
-    state = generate_permutation(N)
-    h = calc_h_value(state)
-    while True:
-        steps += 1
-        print(f"+ Step: {steps} - Heuristic: {h}")
-        if h == 0:
-            print("#Solution found in step {}".format(steps))
-            return state
-        state, new_h = move_steepest_hill(state, h)
-        h = new_h
-
-
-# Simulated Annealing
-def move_annealing(state, h_to_beat, temp, N):
-    rejected_moves = set()
-    found_move = False
-    while not found_move:
-        # swap random columns
-        first_row = random.randint(0, N - 1)
-        second_row = random.randint(0, N - 1)
-        new_state = np.copy(state)
-        t = new_state[first_row]
-        new_state[first_row] = new_state[second_row]
-        new_state[second_row] = t
-
-        h_cost = calc_h_value(new_state)
-        if h_cost < h_to_beat:
-            found_move = True
-        else:
-            delta_e = h_to_beat - h_cost
-            accept_probability = min(1, math.exp(delta_e / temp))
-            found_move = random.random() <= accept_probability
-            if not found_move:
-                rejected_moves.add((first_row, second_row))
-    return new_state, h_cost
-
-
-def annealing(N):
-    print("\t--- Simulated Annealing Algorithm ---")
-    steps = 1
-    temp = N**2
-    annealing_rate = 0.95
-    state = generate_permutation(N)
-    h_cost = calc_h_value(state)
-    while True:
-        print(f"+ Step: {steps} - Heuristic: {h_cost}")
-        if h_cost == 0:
-            print(f"Solution found in step {steps}")
-            return state
-        state, h_cost = move_annealing(state, h_cost, temp, N)
-        temp = max(temp * annealing_rate, 0.01)
-        steps += 1
 
 
 def compute_attacks(state, N):
@@ -131,10 +46,12 @@ def compute_attacks(state, N):
 
 
 def compute_collisions(state, dn: dict, dp: dict, N):
+    # count queens on diagonals
     for i in range(N):
         dn[i + state[i]] = dn.get(i + state[i], 0) + 1
         dp[i - state[i]] = dp.get(i - state[i], 0) + 1
 
+    # diagonals that don't have any queens are set to 0
     for i in range(0, 2 * N - 1):
         if i not in dn:
             dn[i] = 0
@@ -142,6 +59,8 @@ def compute_collisions(state, dn: dict, dp: dict, N):
         if i not in dp:
             dp[i] = 0
 
+    # the number of collisions on any diagonal line
+    # is one less than the number of queens on that line
     dn_collisions = reduce(
         lambda acc, d: acc + (d - 1) if d != 0 else acc, dn.values(), 0
     )
@@ -229,7 +148,7 @@ def perform_swap(state, i, j, collisions, reduction, dn, dp):
 def fast_search(N):
     print("\t--- Fast Algorithm ---")
     C1 = 0.45
-    C2 = 32
+    C2 = 1000
 
     # initialization
     while True:
@@ -257,7 +176,8 @@ def fast_search(N):
                     steps += 1
                     print(f"+ Step: {steps} - Collisions: {collisions}")
                     if collisions == 0:
-                        print(f"Heuristic: {calc_h_value(state)}")
+                        # double check
+                        print(f"H value: {calc_h_value(state)}")
                         print(f"Solution found in step {steps}")
                         return state
                     if collisions < limit:

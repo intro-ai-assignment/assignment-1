@@ -1,7 +1,6 @@
-import genetic
-import hill_climbing
+import qs2
+import annealing
 import blind_searching
-
 import time
 
 
@@ -37,12 +36,10 @@ if __name__ == "__main__":
         print("#Select Algorithm Number to solve problem:")
         print(" 1. Breadth First Search (BFS)")
         print(" 2. Depth First Search (DFS)")
-        print(" 3. Genetic Algorithm")
-        print(" 4. Steepest-Ascent Hill-Climbing")
-        print(" 5. Simulated Annealing")
-        print(" 6. Fast Search")
+        print(" 3. Simulated Annealing")
+        print(" 4. QS2")
         select = int(input("Enter number: "))
-        if select < 1 or select > 6:
+        if select < 1 or select > 4:
             print("Please enter valid value...")
         else:
             t1 = time.time()
@@ -52,13 +49,9 @@ if __name__ == "__main__":
             elif select == 2:
                 blind_searching.DFS(N)
             elif select == 3:
-                result = genetic.genetic_alg(N)
+                result = annealing.main(N)
             elif select == 4:
-                hill_climbing.steepest_ascent(N)
-            elif select == 5:
-                result = hill_climbing.annealing(N)
-            else:
-                result = hill_climbing.fast_search(N)
+                result = qs2.fast_search(N)
             t2 = time.time()
             # if len(result) > 0:
             #     print_chessboard(result)
