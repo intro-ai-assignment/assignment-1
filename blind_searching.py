@@ -70,7 +70,7 @@ def BFS(N):
                 print(solution)
             print(f"Total {len(solutions)} solutions")
             print("\t--- Breath First Search ---")
-            return
+            break
         selected_state = frontier.pop(0)
         print(f"- Steps {steps}: {selected_state}")
         checked_states.append(selected_state)
@@ -82,6 +82,7 @@ def BFS(N):
         for state in new_states:
             if state not in frontier and state not in checked_states:
                 frontier.append(state)
+    return solutions
 
 def DFS(N):
     init_state = [-1] * N
