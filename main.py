@@ -45,16 +45,17 @@ if __name__ == "__main__":
             t1 = time.time()
             result = []
             if select == 1:
-                blind_searching.BFS(N)
+                result = blind_searching.BFS(N)
             elif select == 2:
-                blind_searching.DFS(N)
+                result = blind_searching.DFS(N)
             elif select == 3:
                 result = annealing.main(N)
             elif select == 4:
                 result = qs2.fast_search(N)
             t2 = time.time()
             # if len(result) > 0:
-            #     print_chessboard(result)
+            #     for state in result:
+            #         print_chessboard(state)
             print(result)
             print("Time cost:", t2 - t1, "seconds")
             break
