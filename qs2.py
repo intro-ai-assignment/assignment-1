@@ -146,9 +146,9 @@ def perform_swap(state, i, j, collisions, reduction, dn, dp):
 
 
 def fast_search(N):
-    print("\t--- Fast Algorithm ---")
+    print("\t--- QS2 Algorithm ---")
     C1 = 0.45
-    C2 = 1000
+    C2 = 32
 
     # initialization
     while True:
